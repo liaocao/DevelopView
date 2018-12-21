@@ -7,11 +7,6 @@ import android.view.ViewGroup;
 
 public class FlowLayout extends ViewGroup {
 
-    int lineWidth = 0;//记录每一行的宽度
-    int lineHeight = 0;//记录每一行的高度
-    int height = 0;//记录整个FlowLayout所占高度
-    int width = 0;//记录整个FlowLayout所占宽度
-
     public FlowLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -43,6 +38,10 @@ public class FlowLayout extends ViewGroup {
         int measureWidthMode = MeasureSpec.getMode(widthMeasureSpec);
         int measureHeightMode = MeasureSpec.getMode(heightMeasureSpec);
 
+        int lineWidth = 0;//记录每一行的宽度
+        int lineHeight = 0;//记录每一行的高度
+        int height = 0;//记录整个FlowLayout所占高度
+        int width = 0;//记录整个FlowLayout所占宽度
         int count = getChildCount();
         for (int i=0;i<count;i++){
             View child = getChildAt(i);
@@ -52,30 +51,26 @@ public class FlowLayout extends ViewGroup {
             int childWidth = child.getMeasuredWidth() + lp.leftMargin +lp.rightMargin;
             int childHeight = child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
 
-            if (lineWidth + childWidth > measureWidth){//当当前统计的lineWidth加上子view的宽度大于建议宽度时，就需要进行换行
-                //需要换行时重点是flowlayout的width和height
-                width = Math.max(lineWidth,childWidth);
-                height += lineHeight;
-                //因为由于盛不下当前控件，而将此控件调到下一行，所以将此控件的高度和宽度初始化给lineHeight、lineWidth
-                lineHeight = childHeight;
-                lineWidth = childWidth;
-            }else{
-                // 否则累加值lineWidth,lineHeight取最大高度
-                lineHeight = Math.max(lineHeight,childHeight);
+            if(lineWidth + childWidth < measureWidth - getPaddingLeft() - getPaddingRight()){//这样少算了一行高度，因此最后一行时加上
                 lineWidth += childWidth;
+                lineHeight = Math.max(lineHeight, childHeight);
+
+            }else{//换行重新计算下一行宽度lineWidth
+                height += lineHeight;//如果换行，必须立刻加上之前的lineHeight
+
+                lineWidth = childWidth;
+                lineHeight = childHeight;
             }
 
-            //算到最后一行时，漏算了width和height，所以特地加上
-            if (i == count -1){
+            if(i == count - 1){
                 height += lineHeight;
-                width = Math.max(width,lineWidth);
             }
-
+            width = Math.max(width, lineWidth);
         }
 
         setMeasuredDimension((measureWidthMode == MeasureSpec.EXACTLY) ? measureWidth
-                : width, (measureHeightMode == MeasureSpec.EXACTLY) ? measureHeight
-                : height);
+                : width + getPaddingLeft() + getPaddingRight(), (measureHeightMode == MeasureSpec.EXACTLY) ? measureHeight
+                : height + getPaddingTop() + getPaddingBottom());
     }
 
     @Override
@@ -91,15 +86,16 @@ public class FlowLayout extends ViewGroup {
             int childWidth = child.getMeasuredWidth()+lp.leftMargin+lp.rightMargin;
             int childHeight = child.getMeasuredHeight()+lp.topMargin+lp.bottomMargin;
 
-            if (childWidth + lineWidth > getMeasuredWidth()){
+            //lineWidth是为了判断是否要换行，lineHeight是为了确定换行的位置
+            if(childWidth + lineWidth < getMeasuredWidth() - getPaddingLeft() - getPaddingRight()){
+                lineHeight = Math.max(lineHeight, childHeight);
+                lineWidth += childWidth;
+            }else{
                 //如果换行
                 top += lineHeight;
                 left = 0;
                 lineHeight = childHeight;
                 lineWidth = childWidth;
-            }else{
-                lineHeight = Math.max(lineHeight,childHeight);
-                lineWidth += childWidth;
             }
 
             //计算childView的left,top,right,bottom

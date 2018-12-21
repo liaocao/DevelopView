@@ -25,6 +25,8 @@ public class MainActivity extends ListActivity {
         List<Map<String, Object>> myData = new ArrayList<Map<String, Object>>();
         addItem(myData, "SimpleActivity", new Intent(this, SimpleActivity.class));
         addItem(myData, "NormalActivity", new Intent(this, NormalActivity.class));
+        addItem(myData, "FlowLayoutActivity", new Intent(this, FlowLayoutActivity.class));
+        addItem(myData, "FlowLayout2Activity", new Intent(this, FlowLayout2Activity.class));
         addItem(myData, "WaterFallActivity", new Intent(this, WaterFallActivity.class));
         return myData;
     }

@@ -18,7 +18,9 @@
         </activity>
         <activity android:name=".SimpleActivity" />
         <activity android:name=".NormalActivity" />
-        <activity android:name=".WaterFallActivity"></activity>
+        <activity android:name=".WaterFallActivity" />
+        <activity android:name=".FlowLayoutActivity" />
+        <activity android:name=".FlowLayout2Activity"></activity>
     </application>
 
 </manifest>

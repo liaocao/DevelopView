@@ -17,6 +17,7 @@ public class MyLinLayout extends ViewGroup {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        //这个方法的目的是求出子view累计的总宽度和总高度，再交给setMeasuredDimension方法决定是否采用
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
         int measureHeight = MeasureSpec.getSize(heightMeasureSpec);
@@ -42,10 +43,11 @@ public class MyLinLayout extends ViewGroup {
         }//原来width和height是通过计算子控件的宽高度得来的
 
         setMeasuredDimension((measureWidthMode == MeasureSpec.EXACTLY) ? measureWidth: width, (measureHeightMode == MeasureSpec.EXACTLY) ? measureHeight: height);
-    }
+    }//EXACTLY对应的是MATCH_PARENT和具体的数值，就不需要计算子view累计的值了，所以对应的就是measureWidth
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        //这个方法的目的是将其包含的子View全部布局好
         int top = 0;
         int count = getChildCount();
         for (int i=0;i<count;i++) {

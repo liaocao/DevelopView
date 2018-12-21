@@ -51,6 +51,7 @@ public class WaterFallLayout extends ViewGroup {
         int wrapHeight;
         wrapHeight = getMaxHeight();//取到高度最大的值
         setMeasuredDimension(widthMode == MeasureSpec.AT_MOST ? wrapWidth : sizeWidth, wrapHeight);
+        //AT_MOST对应的是WRAP_CONTENT，未给出明确值，因此需要用计算的值
     }
 
     private void clearTop() {
